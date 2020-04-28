@@ -1,18 +1,19 @@
 from tkinter import *
-from CellularAutomaton.GUI.CellGrid import CellGrid
+from GUI.CellGrid import CellGrid
+
 
 def createSimulationWindow():
-
     simulationWindow = Toplevel(app)
 
     grid = CellGrid(simulationWindow, int(heightEntry.get()), int(widthEntry.get()), 15)
     grid.pack()
 
-    simulateButton = Button(simulationWindow, text="Simulate", bg='red', command=createSimulationWindow) #TODO : Change callback command to Simulate
+    simulateButton = Button(simulationWindow, text="Simulate", bg='red',
+                            command=createSimulationWindow)  # TODO : Change callback command to Simulate
     simulateButton.pack()
 
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     app = Tk()
 
     app.title("Define Simulation Grid")
