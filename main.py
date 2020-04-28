@@ -1,5 +1,5 @@
 from tkinter import *
-from TestGUI.GUI.CellGrid import CellGrid
+from CellularAutomaton.GUI.CellGrid import CellGrid
 
 def createSimulationWindow():
 
