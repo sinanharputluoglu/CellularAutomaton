@@ -1,5 +1,5 @@
 from tkinter import *
-from TestGUI.GUI.Cell import Cell
+from CellularAutomaton.GUI.Cell import Cell
 
 class CellGrid(Canvas):
 
