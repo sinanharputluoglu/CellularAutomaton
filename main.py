@@ -1,6 +1,6 @@
 from tkinter import *
 from GUI.CellGrid import CellGrid
-
+import Simulation
 
 def createSimulationWindow():
     simulationWindow = Toplevel(app)
