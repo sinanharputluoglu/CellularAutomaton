@@ -1,29 +1,47 @@
-from Simulation import SimCell
+from Simulation.SimCell import SimCell
 from typing import List
 import math
 class SimGrid:
     def __init__(self, size_x, size_y):
         self.size_x = size_x
         self.size_y = size_y
-        self.grid = [] # type: List[List[SimCell]]
-        self.targetCell = None
+        self.grid = []
+        self.targetCell = None # type: List[List[SimCell]]
         for row in range(size_y):
             line = []
             for column in range(size_x):
                 line.append(SimCell(column, row))
             self.grid.append(line)
 
-    def set_target(self, target):
-        self.targetCell = target
+    def get_grid(self):
+        return self.grid
+
+    def print_grid(self):
+        for i in range(0, self.size_x):
+            for j in range(0, self.size_y):
+                print(self.grid[i][j].state, end="  ")
+            print(" ")
+
+    def set_target(self, x, y):
+        self.targetCell = SimCell(x, y)
+        self.grid[y][x].set_state('T')
+
+    def set_pedestarians(self, ped_list: List):
+        for value in ped_list:
+            self.grid[value[0]][value[1]].set_state('P')
+
+    def set_obstacles(self, obs_list: List):
+        for value in obs_list:
+            self.grid[value[0]][value[1]].set_state('O')
 
     def update_utilities(self):
         for row in range(self.size_y):
             for column in range(self.size_x):
                     self.grid[row][column].update_utility_score(self.targetCell)
 
-    def update_distances(self, target_x, target_y):
-        row = target_x
-        column = target_y
+    def update_distances(self):
+        row = self.targetCell.y
+        column = self.targetCell.x
         if row != 0:
             self.find_distance_to_target(row - 1, column)
 
@@ -49,9 +67,12 @@ class SimGrid:
             self.find_distance_to_target(row + 1, column - 1)
 
 
+    def simulate_next_step(self, dijsktra=False):
+        for row in range(self.size_y):
+            for column in range(self.size_x):
+                self.grid[row][column].set_next_state()
 
-
-    def update_map(self, dijsktra=False):
+    def simulate_one_step(self, dijsktra=False):
         for row in range(self.size_y):
             for column in range(self.size_x):
                 if self.grid[row][column].is_person():
@@ -101,6 +122,7 @@ class SimGrid:
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)
 
         min_row, min_column = min(neighbouring_cells, key=neighbouring_cells.get)
+        print(min_column, min_row)
         self.grid[min_row][min_column].set_state('P')
         return True
 

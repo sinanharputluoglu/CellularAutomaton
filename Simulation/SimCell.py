@@ -7,19 +7,31 @@ class SimCell(object):
 
     def __init__(self, x, y):
         self.state = 'E'
+        self.next_state = 'E'
         self.x = x
         self.y = y
         self.utility_score = 0
         self.distance = math.inf
         self.visited_dijkstra = False
 
+    def copy_cell(self):
+        cell = SimCell(self.x, self.y)
+        cell.state = self.state
+        cell.utility_score = self.utility_score
+        cell.visited_dijkstra = self.visited_dijkstra
+        cell.distance = self.distance
+        return cell
+
     def set_state(self, state):
-        self.state = state
+        self.next_state = state
         if state == 'T':
             self.distance = 0
             self.visited_dijkstra = True
         if state == 'O':
             self.visited_dijkstra = True
+
+    def set_next_state(self):
+        self.state = self.next_state
 
     def update_utility_score(self, target):
         self.utility_score = math.sqrt((self.x - target.x)**2 + (self.y - target.y)**2)
@@ -42,11 +54,13 @@ class SimCell(object):
     def get_avoidance_cost(self, cell):
         if cell.state == 'P':
             return math.exp(1 / (-1 * R_MAX_SQUARED))
+
     def is_target(self):
         if self.state == 'T':
             return True
         else:
             return False
+
     def set_distance(self, dist):
         self.visited_dijkstra = True
         self.distance = dist
