@@ -22,6 +22,12 @@ class SimCell(object):
         if state == 'O':
             self.visited_dijkstra = True
 
+    def is_available(self):
+        if self.next_state == 'P':
+            return False
+        else:
+            return True
+
     def set_next_state(self):
         self.state = self.next_state
 
