@@ -17,8 +17,8 @@ class Simulation:
         print("Setup complete.")
 
 
-    def epoch(self):
-        self.sim_grid.simulate_one_step(dijsktra=False)
+    def epoch(self, dijsk):
+        self.sim_grid.simulate_one_step(dijsktra=dijsk)
         self.sim_grid.simulate_next_step()
         return  self.sim_grid.get_grid()
 

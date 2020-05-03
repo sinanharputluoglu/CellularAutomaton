@@ -3,6 +3,8 @@ from GUI.CellGrid import CellGrid
 from Simulation.Simulation import Simulation
 from time import sleep
 
+grid = None
+
 def createSimulationWindow():
     simulationWindow = Toplevel(app)
 
@@ -12,6 +14,12 @@ def createSimulationWindow():
     simulateButton = Button(simulationWindow, text="Simulate", bg='red',
                             command=createSimulationWindow)  # TODO : Change callback command to Simulate
     simulateButton.pack()
+
+def draw_board(gridd, x, y):
+    for i in range(0, x):
+        for j in range(0, y):
+            grid[i][j].role = gridd[i][j].state
+    grid.draw()
 
 
 if __name__ == "__main__":
@@ -39,8 +47,12 @@ if __name__ == "__main__":
     # app.mainloop()
 
     simulation = Simulation()
-    simulation.set_simulation(16, 16, 15, 7, [[1,1]], [])
+    simulation.set_simulation(16, 16, 15, 7, [[1,1], [3,4]], [[5,5], [5,6], [5,7]])
+    i = 0
     while(True):
         simulation.print_grid()
-        simulation.epoch()
+        grid = simulation.epoch(False)
+        #visaulize grid
         sleep(1)
+        i += 1
+        print(i)

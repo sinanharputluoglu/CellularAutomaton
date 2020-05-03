@@ -62,7 +62,6 @@ class SimCell(object):
             return False
 
     def set_distance(self, dist):
-        self.visited_dijkstra = True
         self.distance = dist
 
     def get_distance(self):

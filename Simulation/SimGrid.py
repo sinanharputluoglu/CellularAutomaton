@@ -19,7 +19,7 @@ class SimGrid:
     def print_grid(self):
         for i in range(0, self.size_x):
             for j in range(0, self.size_y):
-                print(self.grid[i][j].state, end="  ")
+                print(self.grid[i][j].distance, end="  ")
             print(" ")
 
     def set_target(self, x, y):
@@ -44,27 +44,35 @@ class SimGrid:
         column = self.targetCell.x
         if row != 0:
             self.find_distance_to_target(row - 1, column)
+            return
 
         if column != 0:
             self.find_distance_to_target(row, column - 1)
+            return
 
         if row !=0 and column !=0:
             self.find_distance_to_target(row - 1, column - 1)
+            return
 
         if row != self.size_y - 1:
             self.find_distance_to_target(row + 1, column)
+            return
 
         if column != self.size_x - 1:
             self.find_distance_to_target(row, column + 1)
+            return
 
         if row != self.size_y - 1 and column != self.size_x - 1:
             self.find_distance_to_target(row + 1, column + 1)
+            return
 
         if row != 0 and column != self.size_x - 1:
             self.find_distance_to_target(row - 1, column + 1)
+            return
 
         if row != self.size_y - 1 and column != 0:
             self.find_distance_to_target(row + 1, column - 1)
+            return
 
 
     def simulate_next_step(self, dijsktra=False):
@@ -122,7 +130,6 @@ class SimGrid:
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)
 
         min_row, min_column = min(neighbouring_cells, key=neighbouring_cells.get)
-        print(min_column, min_row)
         self.grid[min_row][min_column].set_state('P')
         return True
 
@@ -158,6 +165,7 @@ class SimGrid:
 
             min_value = neighbouring_cells[min(neighbouring_cells, key=neighbouring_cells.get)]
             self.grid[row][column].set_distance(min_value + 1)
+            self.grid[row][column].visited_dijkstra = True
             for key, value in neighbouring_cells.items():
                 rr, cc = key
                 self.find_distance_to_target(rr, cc)
