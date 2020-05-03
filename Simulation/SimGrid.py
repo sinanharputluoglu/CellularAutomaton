@@ -19,7 +19,7 @@ class SimGrid:
     def print_grid(self):
         for i in range(0, self.size_x):
             for j in range(0, self.size_y):
-                print(self.grid[i][j].distance, end="  ")
+                print(self.grid[i][j].state, end="  ")
             print(" ")
 
     def set_target(self, x, y):
@@ -42,37 +42,12 @@ class SimGrid:
     def update_distances(self):
         row = self.targetCell.y
         column = self.targetCell.x
-        if row != 0:
-            self.find_distance_to_target(row - 1, column)
-            return
-
-        if column != 0:
-            self.find_distance_to_target(row, column - 1)
-            return
-
-        if row !=0 and column !=0:
-            self.find_distance_to_target(row - 1, column - 1)
-            return
-
-        if row != self.size_y - 1:
-            self.find_distance_to_target(row + 1, column)
-            return
-
-        if column != self.size_x - 1:
-            self.find_distance_to_target(row, column + 1)
-            return
-
-        if row != self.size_y - 1 and column != self.size_x - 1:
-            self.find_distance_to_target(row + 1, column + 1)
-            return
-
-        if row != 0 and column != self.size_x - 1:
-            self.find_distance_to_target(row - 1, column + 1)
-            return
-
-        if row != self.size_y - 1 and column != 0:
-            self.find_distance_to_target(row + 1, column - 1)
-            return
+        i = self.size_x * self.size_y - 1
+        heap = [[row, column]]
+        min_x, min_y = self.find_distance_to_target(row, column)
+        while(i >= 0):
+            min_x, min_y = self.find_distance_to_target(min_x, min_y)
+            i-=1
 
 
     def simulate_next_step(self, dijsktra=False):
@@ -89,85 +64,110 @@ class SimGrid:
 
     def update_movement(self, row, column, dijsktra):
         neighbouring_cells = {}
-        if row != 0:
+        if row != 0 and self.grid[row - 1][column].is_available():
             if self.grid[row - 1][column].is_target():
                 return True
             neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_score(dijsktra)
 
-        if column != 0:
+        if column != 0 and self.grid[row - 1][column].is_available():
             if self.grid[row][column - 1].is_target():
                 return True
             neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_score(dijsktra)
 
-        if row !=0 and column !=0:
+        if row !=0 and column !=0 and self.grid[row - 1][column].is_available():
             if self.grid[row - 1][column - 1].is_target():
                 return True
             neighbouring_cells[(row-1, column-1)] = self.grid[row - 1][column-1].get_score(dijsktra)
 
-        if row != self.size_y - 1:
+        if row != self.size_y - 1 and self.grid[row - 1][column].is_available():
             if self.grid[row+1][column].is_target():
                 return True
             neighbouring_cells[(row+1, column)] = self.grid[row + 1][column].get_score(dijsktra)
 
-        if column != self.size_x - 1:
+        if column != self.size_x - 1 and self.grid[row - 1][column].is_available():
             if self.grid[row][column + 1].is_target():
                 return True
             neighbouring_cells[(row, column+1)] = self.grid[row][column+1].get_score(dijsktra)
 
-        if row != self.size_y - 1 and column != self.size_x - 1:
+        if row != self.size_y - 1 and column != self.size_x - 1 and self.grid[row - 1][column].is_available():
             if self.grid[row + 1][column + 1].is_target():
                 return True
             neighbouring_cells[(row+1, column+1)] = self.grid[row+1][column+1].get_score(dijsktra)
 
-        if row != 0 and column != self.size_x - 1:
+        if row != 0 and column != self.size_x - 1 and self.grid[row - 1][column].is_available():
             if self.grid[row - 1][column + 1].is_target():
                 return True
             neighbouring_cells[(row-1, column+1)] = self.grid[row-1][column+1].get_score(dijsktra)
 
-        if row != self.size_y - 1 and column != 0:
+        if row != self.size_y - 1 and column != 0 and self.grid[row - 1][column].is_available():
             if self.grid[row + 1][column - 1].is_target():
                 return True
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)
-
+        if len(neighbouring_cells) < 1:
+            return False
         min_row, min_column = min(neighbouring_cells, key=neighbouring_cells.get)
         self.grid[min_row][min_column].set_state('P')
         return True
 
+    def merge_dicts(d1, d2):
+        return {} if any(d1[k] != d2[k] for k in d1.keys() & d2) else dict(d1, **d2)
 
     def find_distance_to_target(self, row, column):
-        if self.grid[row][column].is_visited():
-            pass
-        else:
-            neighbouring_cells = {}
-            if row != 0:
+        node_dist = self.grid[row][column].get_distance()
+        neighbouring_cells = {}
+        if row != 0:
+            if node_dist + 1 < self.grid[row - 1][column].get_distance():
+                self.grid[row - 1][column].set_distance(node_dist + 1)
+            if not self.grid[row - 1][column].is_visited():
                 neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_distance()
 
-            if column != 0:
+        if column != 0:
+            if node_dist + 1 < self.grid[row][column - 1].get_distance():
+                self.grid[row][column - 1].set_distance(node_dist + 1)
+            if not self.grid[row][column - 1].is_visited():
                 neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_distance()
 
-            if row != 0 and column != 0:
+        if row != 0 and column != 0:
+            if node_dist + 1 < self.grid[row - 1][column -1].get_distance():
+                self.grid[row - 1][column -1].set_distance(node_dist + 1)
+            if not self.grid[row - 1][column - 1].is_visited():
                 neighbouring_cells[(row - 1, column - 1)] = self.grid[row - 1][column - 1].get_distance()
 
-            if row != self.size_y - 1:
+        if row != self.size_y - 1:
+            if node_dist + 1 < self.grid[row + 1][column].get_distance():
+                self.grid[row + 1][column].set_distance(node_dist + 1)
+            if not self.grid[row + 1][column].is_visited():
                 neighbouring_cells[(row + 1, column)] = self.grid[row + 1][column].get_distance()
 
-            if column != self.size_x - 1:
+        if column != self.size_x - 1:
+            if node_dist + 1 < self.grid[row][column + 1].get_distance():
+                self.grid[row][column + 1].set_distance(node_dist + 1)
+            if not self.grid[row][column + 1].is_visited():
                 neighbouring_cells[(row, column + 1)] = self.grid[row][column + 1].get_distance()
 
-            if row != self.size_y - 1 and column != self.size_x - 1:
+        if row != self.size_y - 1 and column != self.size_x - 1:
+            if node_dist + 1 < self.grid[row + 1][column + 1].get_distance():
+                self.grid[row + 1][column + 1].set_distance(node_dist + 1)
+            if not self.grid[row + 1][column + 1].is_visited():
                 neighbouring_cells[(row + 1, column + 1)] = self.grid[row + 1][column + 1].get_distance()
 
-            if row != 0 and column != self.size_x - 1:
+        if row != 0 and column != self.size_x - 1:
+            if node_dist + 1 < self.grid[row - 1][column + 1].get_distance():
+                self.grid[row - 1][column + 1].set_distance(node_dist + 1)
+            if not self.grid[row - 1][column + 1].is_visited():
                 neighbouring_cells[(row - 1, column + 1)] = self.grid[row - 1][column + 1].get_distance()
 
-            if row != self.size_y - 1 and column != 0:
+        if row != self.size_y - 1 and column != 0:
+            if node_dist + 1 < self.grid[row + 1][column - 1].get_distance():
+                self.grid[row + 1][column - 1].set_distance(node_dist + 1)
+            if not self.grid[row + 1][column - 1].is_visited():
                 neighbouring_cells[(row + 1, column - 1)] = self.grid[row + 1][column - 1].get_distance()
-
-            min_value = neighbouring_cells[min(neighbouring_cells, key=neighbouring_cells.get)]
-            self.grid[row][column].set_distance(min_value + 1)
+        if len(neighbouring_cells) < 1:
             self.grid[row][column].visited_dijkstra = True
-            for key, value in neighbouring_cells.items():
-                rr, cc = key
-                self.find_distance_to_target(rr, cc)
+            return -1, -1
+
+        self.grid[row][column].visited_dijkstra = True
+        return min(neighbouring_cells, key=neighbouring_cells.get)
+
 
 
