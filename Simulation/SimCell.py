@@ -14,14 +14,6 @@ class SimCell(object):
         self.distance = math.inf
         self.visited_dijkstra = False
 
-    def copy_cell(self):
-        cell = SimCell(self.x, self.y)
-        cell.state = self.state
-        cell.utility_score = self.utility_score
-        cell.visited_dijkstra = self.visited_dijkstra
-        cell.distance = self.distance
-        return cell
-
     def set_state(self, state):
         self.next_state = state
         if state == 'T':
