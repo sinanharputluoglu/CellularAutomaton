@@ -1,6 +1,7 @@
 from tkinter import *
 from GUI.Cell import Cell
 
+
 class CellGrid(Canvas):
 
     def __init__(self, master, rowNumber, columnNumber, cellSize, *args, **kwargs):
@@ -37,6 +38,44 @@ class CellGrid(Canvas):
 
         self.draw()
 
+    def get_pedestrians(self):
+        indices = [[i, j] for i, row in enumerate(self.grid) \
+                   for j, cell in enumerate(row) if cell.role == "P"]
+
+        return indices
+
+    def update_pedestrians(self, new_indices):
+
+        old_pedestrians = self.get_pedestrians()
+
+        for i, j in old_pedestrians:
+            cell = self.grid[i][j]
+            cell._switch("G")
+            cell.draw()
+
+        for i, j in new_indices:
+            cell = self.grid[i][j]
+            cell._switch("P")
+            cell.draw()
+
+    def get_obstacles(self):
+        indices = [[i, j] for i, row in enumerate(self.grid) \
+                   for j, cell in enumerate(row) if cell.role == "O"]
+
+        return indices
+
+    def get_target(self):
+        index = [[i, j] for i, row in enumerate(self.grid) \
+                 for j, cell in enumerate(row) if cell.role == "T"]
+
+        return index[0]
+
+    def get_width(self):
+        return len(self.grid[0])
+
+    def get_height(self):
+        return len(self.grid)
+
     def draw(self):
         for row in self.grid:
             for cell in row:
@@ -52,7 +91,7 @@ class CellGrid(Canvas):
         cell = self.grid[row][column]
         cell._switch("P")
         cell.draw()
-        # add the cell to the list of cell switched during the click
+
         self.switched.append(cell)
 
     def handlePedestrianMouseMotion(self, event):
@@ -69,7 +108,7 @@ class CellGrid(Canvas):
         cell = self.grid[row][column]
         cell._switch("O")
         cell.draw()
-        # add the cell to the list of cell switched during the click
+
         self.switched.append(cell)
 
     def handleObstacleMouseMotion(self, event):
@@ -86,7 +125,6 @@ class CellGrid(Canvas):
         cell = self.grid[row][column]
         cell._switch("T")
         cell.draw()
-        # add the cell to the list of cell switched during the click
         self.switched.append(cell)
 
     def handleTargetMouseMotion(self, event):

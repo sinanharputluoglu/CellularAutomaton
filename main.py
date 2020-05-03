@@ -1,9 +1,7 @@
 from tkinter import *
 from GUI.CellGrid import CellGrid
 from Simulation.Simulation import Simulation
-from time import sleep
 
-grid = None
 
 def createSimulationWindow():
     simulationWindow = Toplevel(app)
@@ -11,48 +9,67 @@ def createSimulationWindow():
     grid = CellGrid(simulationWindow, int(heightEntry.get()), int(widthEntry.get()), 15)
     grid.pack()
 
+    simulation = Simulation()
+
+    readyButton = Button(simulationWindow, text="Ready", bg='red',
+                         command=lambda: prepare_simulation(simulation,
+                                                            grid))
+    readyButton.pack()
+
     simulateButton = Button(simulationWindow, text="Simulate", bg='red',
-                            command=createSimulationWindow)  # TODO : Change callback command to Simulate
+                            command=lambda: simulate(simulation, grid))
     simulateButton.pack()
 
-def draw_board(gridd, x, y):
-    for i in range(0, x):
-        for j in range(0, y):
-            grid[i][j].role = gridd[i][j].state
-    grid.draw()
+    autoSimulateButton = Button(simulationWindow, text="Auto Simulate", bg='red',
+                            command=lambda: auto_simulate(simulation, grid))
+    autoSimulateButton.pack()
 
+def prepare_simulation(simulation, grid):
+
+    pedestrian_indices = grid.get_pedestrians()
+    obstacles_indices = grid.get_obstacles()
+    target_index = grid.get_target()
+
+    simulation.set_simulation(grid.get_width(), grid.get_height(), target_index[1], target_index[0],
+                              pedestrian_indices, obstacles_indices)
+
+
+def simulate(simulation, grid):
+    simulation.epoch(dijsk=True)
+
+    simulation.print_grid()
+
+    new_pedestrians = simulation.get_pedestrians()
+
+    grid.update_pedestrians(new_pedestrians)
+
+def auto_simulate(simulation, grid):
+
+    simulate(simulation,grid)
+
+    if grid.get_pedestrians():
+        app.after(1000, lambda: auto_simulate(simulation, grid))
 
 if __name__ == "__main__":
-    # app = Tk()
-    #
-    # app.title("Define Simulation Grid")
-    #
-    # app.geometry('350x200')
-    #
-    # heightLabel = Label(app, text="Height : ")
-    # heightLabel.grid(column=0, row=0)
-    #
-    # heightEntry = Entry(app, width=15)
-    # heightEntry.grid(column=1, row=0)
-    #
-    # widthLabel = Label(app, text="Width : ")
-    # widthLabel.grid(column=0, row=1)
-    #
-    # widthEntry = Entry(app, width=15)
-    # widthEntry.grid(column=1, row=1)
-    #
-    # btn = Button(app, text="Create Simulation Grid", command=createSimulationWindow)
-    # btn.grid(column=0, row=2)
-    #
-    # app.mainloop()
+    app = Tk()
 
-    simulation = Simulation()
-    simulation.set_simulation(50, 50, 25, 25, [[5,25], [7,25], [8,23]], [[15,25], [15,26], [15,27], [14,27], [15,24], [15,23], [15,22], [14,22], [13,22]])
-    i = 0
-    while(True):
-        simulation.print_grid()
-        grid = simulation.epoch(dijsk=False)
-        #visaulize grid
-        sleep(1)
-        i += 1
-        print(i)
+    app.title("Define Simulation Grid")
+
+    app.geometry('350x200')
+
+    heightLabel = Label(app, text="Height : ")
+    heightLabel.grid(column=0, row=0)
+
+    heightEntry = Entry(app, width=15)
+    heightEntry.grid(column=1, row=0)
+
+    widthLabel = Label(app, text="Width : ")
+    widthLabel.grid(column=0, row=1)
+
+    widthEntry = Entry(app, width=15)
+    widthEntry.grid(column=1, row=1)
+
+    btn = Button(app, text="Create Simulation Grid", command=createSimulationWindow)
+    btn.grid(column=0, row=2)
+
+    app.mainloop()

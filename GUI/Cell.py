@@ -1,4 +1,3 @@
-
 class Cell:
     PEDESTRIAN_COLOR_BG = "green"
     EMPTY_COLOR_BG = "white"
@@ -30,7 +29,7 @@ class Cell:
 
     def draw(self):
         """ order to the cell to draw its representation on the canvas """
-        if self.master != None :
+        if self.master != None:
 
             if self.role == "O":
                 fill = Cell.OBSTACLE_COLOR_BG
@@ -44,7 +43,6 @@ class Cell:
                 fill = Cell.TARGET_COLOR_BG
                 outline = Cell.TARGET_COLOR_BORDER
 
-
             if not self.fill:
                 fill = Cell.EMPTY_COLOR_BG
                 outline = Cell.EMPTY_COLOR_BORDER
@@ -54,4 +52,4 @@ class Cell:
             ymin = self.ord * self.size
             ymax = ymin + self.size
 
-            self.master.create_rectangle(xmin, ymin, xmax, ymax, fill = fill, outline = outline)
+            self.master.create_rectangle(xmin, ymin, xmax, ymax, fill=fill, outline=outline)
