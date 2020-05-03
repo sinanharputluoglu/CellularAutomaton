@@ -17,8 +17,8 @@ class SimGrid:
         return self.grid
 
     def print_grid(self):
-        for i in range(0, self.size_x):
-            for j in range(0, self.size_y):
+        for i in range(0, self.size_y):
+            for j in range(0, self.size_x):
                 print(self.grid[i][j].state, end="  ")
             print(" ")
 
@@ -43,11 +43,22 @@ class SimGrid:
         row = self.targetCell.y
         column = self.targetCell.x
         i = self.size_x * self.size_y - 1
-        heap = [[row, column]]
         min_x, min_y = self.find_distance_to_target(row, column)
         while(i >= 0):
             min_x, min_y = self.find_distance_to_target(min_x, min_y)
-            i-=1
+            if min_x == -1 or min_y == -1:
+                min_x, min_y = self.find_new_cell()
+                if min_x == -2 or min_y == -2:
+                    i = -1
+            i -= 1
+
+    def find_new_cell(self):
+        for row in range(self.size_y):
+            for column in range(self.size_x):
+                if self.grid[row][column].get_distance() < math.inf and not self.grid[row][column].is_visited():
+                    return row, column
+        return -2, -2
+
 
 
     def simulate_next_step(self, dijsktra=False):
@@ -69,37 +80,37 @@ class SimGrid:
                 return True
             neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_score(dijsktra)
 
-        if column != 0 and self.grid[row - 1][column].is_available():
+        if column != 0 and self.grid[row][column -1].is_available():
             if self.grid[row][column - 1].is_target():
                 return True
             neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_score(dijsktra)
 
-        if row !=0 and column !=0 and self.grid[row - 1][column].is_available():
+        if row !=0 and column !=0 and self.grid[row - 1][column - 1].is_available():
             if self.grid[row - 1][column - 1].is_target():
                 return True
             neighbouring_cells[(row-1, column-1)] = self.grid[row - 1][column-1].get_score(dijsktra)
 
-        if row != self.size_y - 1 and self.grid[row - 1][column].is_available():
+        if row != self.size_y - 1 and self.grid[row + 1][column].is_available():
             if self.grid[row+1][column].is_target():
                 return True
             neighbouring_cells[(row+1, column)] = self.grid[row + 1][column].get_score(dijsktra)
 
-        if column != self.size_x - 1 and self.grid[row - 1][column].is_available():
+        if column != self.size_x - 1 and self.grid[row][column + 1].is_available():
             if self.grid[row][column + 1].is_target():
                 return True
             neighbouring_cells[(row, column+1)] = self.grid[row][column+1].get_score(dijsktra)
 
-        if row != self.size_y - 1 and column != self.size_x - 1 and self.grid[row - 1][column].is_available():
+        if row != self.size_y - 1 and column != self.size_x - 1 and self.grid[row + 1][column + 1].is_available():
             if self.grid[row + 1][column + 1].is_target():
                 return True
             neighbouring_cells[(row+1, column+1)] = self.grid[row+1][column+1].get_score(dijsktra)
 
-        if row != 0 and column != self.size_x - 1 and self.grid[row - 1][column].is_available():
+        if row != 0 and column != self.size_x - 1 and self.grid[row - 1][column + 1].is_available():
             if self.grid[row - 1][column + 1].is_target():
                 return True
             neighbouring_cells[(row-1, column+1)] = self.grid[row-1][column+1].get_score(dijsktra)
 
-        if row != self.size_y - 1 and column != 0 and self.grid[row - 1][column].is_available():
+        if row != self.size_y - 1 and column != 0 and self.grid[row + 1][column - 1].is_available():
             if self.grid[row + 1][column - 1].is_target():
                 return True
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)

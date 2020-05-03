@@ -14,13 +14,16 @@ class SimCell(object):
         self.distance = math.inf
         self.visited_dijkstra = False
 
+
     def set_state(self, state):
         self.next_state = state
         if state == 'T':
             self.distance = 0
             self.visited_dijkstra = True
         if state == 'O':
-            self.visited_dijkstra = True
+            self.state = 'O'
+            self.next_state = 'O'
+            self.utility_score = math.inf
 
     def is_available(self):
         if self.next_state == 'P' or self.state == 'P':
@@ -60,7 +63,10 @@ class SimCell(object):
             return False
 
     def set_distance(self, dist):
-        self.distance = dist
+        if self.state == 'O':
+            pass
+        else:
+            self.distance = dist
 
     def get_distance(self):
         return self.distance
