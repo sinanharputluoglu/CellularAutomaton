@@ -26,6 +26,13 @@ class SimGrid:
         self.targetCell = SimCell(x, y)
         self.grid[y][x].set_state('T')
 
+    def get_pedestrians(self):
+        indices = [[i, j] for i, row in enumerate(self.grid) \
+                   for j, cell in enumerate(row) if cell.state == "P"]
+        print(indices)
+
+        return indices
+
     def set_pedestarians(self, ped_list: List):
         for value in ped_list:
             self.grid[value[0]][value[1]].set_state('P')

@@ -25,4 +25,6 @@ class Simulation:
     def print_grid(self):
         self.sim_grid.print_grid()
 
+    def get_pedestrians(self):
+        return self.sim_grid.get_pedestrians()
 
