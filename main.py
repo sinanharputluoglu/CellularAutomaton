@@ -47,11 +47,11 @@ if __name__ == "__main__":
     # app.mainloop()
 
     simulation = Simulation()
-    simulation.set_simulation(30, 30, 20, 10, [[1,1]], [])
+    simulation.set_simulation(50, 50, 25, 25, [[5,25], [7,25], [8,23]], [[15,25], [15,26], [15,27], [14,27], [15,24], [15,23], [15,22], [14,22], [13,22]])
     i = 0
     while(True):
         simulation.print_grid()
-        grid = simulation.epoch(dijsk=True)
+        grid = simulation.epoch(dijsk=False)
         #visaulize grid
         sleep(1)
         i += 1
