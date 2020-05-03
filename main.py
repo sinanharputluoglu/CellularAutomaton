@@ -2,11 +2,6 @@ from tkinter import *
 from GUI.CellGrid import CellGrid
 from Simulation.Simulation import Simulation
 
-def switchButtonState(button):
-    if (button['state'] == NORMAL):
-        button['state'] = DISABLED
-    else:
-        button['state'] = NORMAL
 
 def createSimulationWindow():
     simulationWindow = Toplevel(app)
@@ -26,7 +21,7 @@ def createSimulationWindow():
     simulateButton.pack()
 
     autoSimulateButton = Button(simulationWindow, text=" Start Simulation ", bg='#e46d69', state=DISABLED,
-                            command=lambda: auto_simulate(simulation, grid))
+                            command=lambda: [auto_simulate(simulation, grid), switchButtonState(simulateButton)])
     autoSimulateButton.pack()
 
 def prepare_simulation(simulation, grid):
@@ -54,6 +49,12 @@ def auto_simulate(simulation, grid):
 
     if grid.get_pedestrians():
         app.after(1000, lambda: auto_simulate(simulation, grid))
+
+def switchButtonState(button):
+    if (button['state'] == NORMAL):
+        button['state'] = DISABLED
+    else:
+        button['state'] = NORMAL
 
 if __name__ == "__main__":
     app = Tk()
