@@ -75,7 +75,7 @@ if __name__ == "__main__":
     widthEntry = Entry(app, width=15)
     widthEntry.grid(column=1, row=1)
 
-    btn = Button(app, text="Create Simulation Grid", bg='#e46d69', command=createSimulationWindow)
+    btn = Button(app, text=" Create Simulation Grid ", bg='#e46d69', command=createSimulationWindow)
     btn.grid(column=0, row=2)
 
     app.mainloop()
