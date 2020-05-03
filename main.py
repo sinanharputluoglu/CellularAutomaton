@@ -16,16 +16,16 @@ def createSimulationWindow():
 
     simulation = Simulation()
 
-    readyButton = Button(simulationWindow, text="Setup Environment", bg='#e46d69', state=NORMAL,
+    readyButton = Button(simulationWindow, text=" Setup Environment ", bg='#e46d69', state=NORMAL,
                          command=lambda: [prepare_simulation(simulation,grid),
                                           switchButtonState(simulateButton), switchButtonState(autoSimulateButton), switchButtonState(readyButton) ])
     readyButton.pack()
 
-    simulateButton = Button(simulationWindow, text="Next Step", bg='#e46d69', state=DISABLED,
+    simulateButton = Button(simulationWindow, text=" Next Step ", bg='#e46d69', state=DISABLED,
                             command=lambda: simulate(simulation, grid))
     simulateButton.pack()
 
-    autoSimulateButton = Button(simulationWindow, text="Start Simulation", bg='#e46d69', state=DISABLED,
+    autoSimulateButton = Button(simulationWindow, text=" Start Simulation ", bg='#e46d69', state=DISABLED,
                             command=lambda: auto_simulate(simulation, grid))
     autoSimulateButton.pack()
 
