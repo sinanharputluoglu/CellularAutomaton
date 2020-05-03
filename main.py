@@ -11,16 +11,16 @@ def createSimulationWindow():
 
     simulation = Simulation()
 
-    readyButton = Button(simulationWindow, text="Ready", bg='red',
+    readyButton = Button(simulationWindow, text="Setup Environment", bg='red',
                          command=lambda: prepare_simulation(simulation,
                                                             grid))
     readyButton.pack()
 
-    simulateButton = Button(simulationWindow, text="Simulate", bg='red',
+    simulateButton = Button(simulationWindow, text="Next Step", bg='red',
                             command=lambda: simulate(simulation, grid))
     simulateButton.pack()
 
-    autoSimulateButton = Button(simulationWindow, text="Auto Simulate", bg='red',
+    autoSimulateButton = Button(simulationWindow, text="Start Simulation", bg='red',
                             command=lambda: auto_simulate(simulation, grid))
     autoSimulateButton.pack()
 
