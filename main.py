@@ -20,8 +20,12 @@ def createSimulationWindow():
                             command=lambda: simulate(simulation, grid))
     simulateButton.pack()
 
+    autoSimulateButton = Button(simulationWindow, text="Auto Simulate", bg='red',
+                            command=lambda: auto_simulate(simulation, grid))
+    autoSimulateButton.pack()
 
 def prepare_simulation(simulation, grid):
+
     pedestrian_indices = grid.get_pedestrians()
     obstacles_indices = grid.get_obstacles()
     target_index = grid.get_target()
@@ -39,6 +43,12 @@ def simulate(simulation, grid):
 
     grid.update_pedestrians(new_pedestrians)
 
+def auto_simulate(simulation, grid):
+
+    simulate(simulation,grid)
+
+    if grid.get_pedestrians():
+        app.after(1000, lambda: auto_simulate(simulation, grid))
 
 if __name__ == "__main__":
     app = Tk()
