@@ -11,17 +11,17 @@ def createSimulationWindow():
 
     simulation = Simulation()
 
-    readyButton = Button(simulationWindow, text="Ready", bg='red',
-                         command=lambda: prepare_simulation(simulation,
-                                                            grid))
+    readyButton = Button(simulationWindow, text=" Setup Environment ", bg='#e46d69', state=NORMAL,
+                         command=lambda: [prepare_simulation(simulation,grid),
+                                          switchButtonState(simulateButton), switchButtonState(autoSimulateButton), switchButtonState(readyButton) ])
     readyButton.pack()
 
-    simulateButton = Button(simulationWindow, text="Simulate", bg='red',
+    simulateButton = Button(simulationWindow, text=" Next Step ", bg='#e46d69', state=DISABLED,
                             command=lambda: simulate(simulation, grid))
     simulateButton.pack()
 
-    autoSimulateButton = Button(simulationWindow, text="Auto Simulate", bg='red',
-                            command=lambda: auto_simulate(simulation, grid))
+    autoSimulateButton = Button(simulationWindow, text=" Start Simulation ", bg='#e46d69', state=DISABLED,
+                            command=lambda: [auto_simulate(simulation, grid), switchButtonState(simulateButton)])
     autoSimulateButton.pack()
 
 def prepare_simulation(simulation, grid):
@@ -50,6 +50,12 @@ def auto_simulate(simulation, grid):
     if grid.get_pedestrians():
         app.after(1000, lambda: auto_simulate(simulation, grid))
 
+def switchButtonState(button):
+    if (button['state'] == NORMAL):
+        button['state'] = DISABLED
+    else:
+        button['state'] = NORMAL
+
 if __name__ == "__main__":
     app = Tk()
 
@@ -69,7 +75,7 @@ if __name__ == "__main__":
     widthEntry = Entry(app, width=15)
     widthEntry.grid(column=1, row=1)
 
-    btn = Button(app, text="Create Simulation Grid", command=createSimulationWindow)
+    btn = Button(app, text=" Create Simulation Grid ", bg='#e46d69', command=createSimulationWindow)
     btn.grid(column=0, row=2)
 
     app.mainloop()
