@@ -2,6 +2,11 @@ from tkinter import *
 from GUI.CellGrid import CellGrid
 from Simulation.Simulation import Simulation
 
+def switchButtonState(button):
+    if (button['state'] == NORMAL):
+        button['state'] = DISABLED
+    else:
+        button['state'] = NORMAL
 
 def createSimulationWindow():
     simulationWindow = Toplevel(app)
@@ -11,16 +16,16 @@ def createSimulationWindow():
 
     simulation = Simulation()
 
-    readyButton = Button(simulationWindow, text="Setup Environment", bg='red',
-                         command=lambda: prepare_simulation(simulation,
-                                                            grid))
+    readyButton = Button(simulationWindow, text="Setup Environment", bg='#e46d69', state=NORMAL,
+                         command=lambda: [prepare_simulation(simulation,grid),
+                                          switchButtonState(simulateButton), switchButtonState(autoSimulateButton), switchButtonState(readyButton) ])
     readyButton.pack()
 
-    simulateButton = Button(simulationWindow, text="Next Step", bg='red',
+    simulateButton = Button(simulationWindow, text="Next Step", bg='#e46d69', state=DISABLED,
                             command=lambda: simulate(simulation, grid))
     simulateButton.pack()
 
-    autoSimulateButton = Button(simulationWindow, text="Start Simulation", bg='red',
+    autoSimulateButton = Button(simulationWindow, text="Start Simulation", bg='#e46d69', state=DISABLED,
                             command=lambda: auto_simulate(simulation, grid))
     autoSimulateButton.pack()
 
@@ -69,7 +74,7 @@ if __name__ == "__main__":
     widthEntry = Entry(app, width=15)
     widthEntry.grid(column=1, row=1)
 
-    btn = Button(app, text="Create Simulation Grid", command=createSimulationWindow)
+    btn = Button(app, text="Create Simulation Grid", bg='#e46d69', command=createSimulationWindow)
     btn.grid(column=0, row=2)
 
     app.mainloop()
