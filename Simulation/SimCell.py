@@ -23,7 +23,7 @@ class SimCell(object):
             self.visited_dijkstra = True
 
     def is_available(self):
-        if self.next_state == 'P':
+        if self.next_state == 'P' or self.state == 'P':
             return False
         else:
             return True

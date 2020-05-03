@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # app.mainloop()
 
     simulation = Simulation()
-    simulation.set_simulation(30, 30, 20, 10, [[1,1]], [])
+    simulation.set_simulation(30, 30, 20, 10, [[5,5], [1,5], [5,1]], [[1,1], [1,2], [1,3], [1,4], [2,4], [2,5]])
     i = 0
     while(True):
         simulation.print_grid()
