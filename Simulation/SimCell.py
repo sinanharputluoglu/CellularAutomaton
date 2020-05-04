@@ -18,6 +18,7 @@ class SimCell(object):
     def set_state(self, state):
         self.next_state = state
         if state == 'T':
+            self.state = 'T'
             self.distance = 0
             self.visited_dijkstra = True
         if state == 'O':
