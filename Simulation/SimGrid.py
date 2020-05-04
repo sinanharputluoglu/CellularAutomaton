@@ -40,7 +40,7 @@ class SimGrid:
 
     def set_pedestarians(self, ped_list: List):
         for value in ped_list:
-            self.grid[value[0]][value[1]].set_state('P')
+            self.grid[value[0]][value[1]].state = 'P'
 
     def set_obstacles(self, obs_list: List):
         for value in obs_list:
@@ -158,7 +158,7 @@ class SimGrid:
 
         if row != 0 and column != 0:
             if node_dist + 1 < self.grid[row - 1][column -1].get_distance():
-                self.grid[row - 1][column -1].set_distance(node_dist + 1)
+                self.grid[row - 1][column -1].set_distance(node_dist + math.sqrt(2))
             if not self.grid[row - 1][column - 1].is_visited():
                 neighbouring_cells[(row - 1, column - 1)] = self.grid[row - 1][column - 1].get_distance()
 
@@ -176,19 +176,19 @@ class SimGrid:
 
         if row != self.size_y - 1 and column != self.size_x - 1:
             if node_dist + 1 < self.grid[row + 1][column + 1].get_distance():
-                self.grid[row + 1][column + 1].set_distance(node_dist + 1)
+                self.grid[row + 1][column + 1].set_distance(node_dist + math.sqrt(2))
             if not self.grid[row + 1][column + 1].is_visited():
                 neighbouring_cells[(row + 1, column + 1)] = self.grid[row + 1][column + 1].get_distance()
 
         if row != 0 and column != self.size_x - 1:
             if node_dist + 1 < self.grid[row - 1][column + 1].get_distance():
-                self.grid[row - 1][column + 1].set_distance(node_dist + 1)
+                self.grid[row - 1][column + 1].set_distance(node_dist + math.sqrt(2))
             if not self.grid[row - 1][column + 1].is_visited():
                 neighbouring_cells[(row - 1, column + 1)] = self.grid[row - 1][column + 1].get_distance()
 
         if row != self.size_y - 1 and column != 0:
             if node_dist + 1 < self.grid[row + 1][column - 1].get_distance():
-                self.grid[row + 1][column - 1].set_distance(node_dist + 1)
+                self.grid[row + 1][column - 1].set_distance(node_dist + math.sqrt(2))
             if not self.grid[row + 1][column - 1].is_visited():
                 neighbouring_cells[(row + 1, column - 1)] = self.grid[row + 1][column - 1].get_distance()
         if len(neighbouring_cells) < 1:
