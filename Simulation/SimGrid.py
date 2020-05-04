@@ -19,6 +19,11 @@ class SimGrid:
     def print_grid(self):
         for i in range(0, self.size_y):
             for j in range(0, self.size_x):
+                print(self.grid[i][j].distance, end="  ")
+            print(" ")
+
+        for i in range(0, self.size_y):
+            for j in range(0, self.size_x):
                 print(self.grid[i][j].state, end="  ")
             print(" ")
 
@@ -52,6 +57,7 @@ class SimGrid:
         i = self.size_x * self.size_y - 1
         min_x, min_y = self.find_distance_to_target(row, column)
         while(i >= 0):
+            print(min_x, min_y)
             min_x, min_y = self.find_distance_to_target(min_x, min_y)
             if min_x == -1 or min_y == -1:
                 min_x, min_y = self.find_new_cell()
@@ -60,11 +66,16 @@ class SimGrid:
             i -= 1
 
     def find_new_cell(self):
+        smallest = math.inf
+        r = -2
+        c = -2
         for row in range(self.size_y):
             for column in range(self.size_x):
                 if self.grid[row][column].get_distance() < math.inf and not self.grid[row][column].is_visited():
-                    return row, column
-        return -2, -2
+                    if smallest >= self.grid[row][column].get_distance():
+                        smallest = self.grid[row][column].get_distance()
+                        r, c = row, column
+        return r, c
 
 
 

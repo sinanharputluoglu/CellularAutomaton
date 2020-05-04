@@ -24,6 +24,7 @@ class SimCell(object):
             self.state = 'O'
             self.next_state = 'O'
             self.utility_score = math.inf
+            self.visited_dijkstra = True
 
     def is_available(self):
         if self.next_state == 'P' or self.state == 'P':
