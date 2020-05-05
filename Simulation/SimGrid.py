@@ -1,12 +1,16 @@
 from Simulation.SimCell import SimCell
+from Simulation.Pedestarian import Pedestarian
 from typing import List
 import math
+from random import randint
 class SimGrid:
     def __init__(self, size_x, size_y):
         self.size_x = size_x
         self.size_y = size_y
         self.grid = []
         self.targetCell = None # type: List[List[SimCell]]
+        self.sim_time = 0
+        self.persons = [] # type: List[Pedestarian]
         for row in range(size_y):
             line = []
             for column in range(size_x):
@@ -39,9 +43,11 @@ class SimGrid:
         return indices
 
     def set_pedestarians(self, ped_list: List):
+        speeds = [10, 20, 50, 100]
         for value in ped_list:
             self.grid[value[0]][value[1]].state = 'P'
             self.grid[value[0]][value[1]].next_state = 'P'
+            self.persons.append(Pedestarian(value[0], value[1], speeds[randint(0,3)]))
 
     def set_obstacles(self, obs_list: List):
         for value in obs_list:
@@ -86,51 +92,62 @@ class SimGrid:
                 self.grid[row][column].set_next_state()
 
     def simulate_one_step(self, dijsktra=False):
-        for row in range(self.size_y):
-            for column in range(self.size_x):
-                if self.grid[row][column].is_person():
-                    if self.update_movement(row, column, dijsktra):
+        for person in self.persons:
+            row = person.y
+            column = person.x
+            if self.grid[row][column].is_person() and person.is_active():
+                if self.sim_time % person.adj_speed == 0:
+                    if self.update_movement(row, column, dijsktra, person):
                         self.grid[row][column].set_state('E')
+        self.sim_time += 1
 
-    def update_movement(self, row, column, dijsktra):
+    def update_movement(self, row, column, dijsktra, person):
         neighbouring_cells = {}
         if row != 0 and self.grid[row - 1][column].is_available():
             if self.grid[row - 1][column].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_score(dijsktra)
 
         if column != 0 and self.grid[row][column -1].is_available():
             if self.grid[row][column - 1].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_score(dijsktra)
 
         if row !=0 and column !=0 and self.grid[row - 1][column - 1].is_available():
             if self.grid[row - 1][column - 1].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row-1, column-1)] = self.grid[row - 1][column-1].get_score(dijsktra)
 
         if row != self.size_y - 1 and self.grid[row + 1][column].is_available():
             if self.grid[row+1][column].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row+1, column)] = self.grid[row + 1][column].get_score(dijsktra)
 
         if column != self.size_x - 1 and self.grid[row][column + 1].is_available():
             if self.grid[row][column + 1].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row, column+1)] = self.grid[row][column+1].get_score(dijsktra)
 
         if row != self.size_y - 1 and column != self.size_x - 1 and self.grid[row + 1][column + 1].is_available():
             if self.grid[row + 1][column + 1].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row+1, column+1)] = self.grid[row+1][column+1].get_score(dijsktra)
 
         if row != 0 and column != self.size_x - 1 and self.grid[row - 1][column + 1].is_available():
             if self.grid[row - 1][column + 1].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row-1, column+1)] = self.grid[row-1][column+1].get_score(dijsktra)
 
         if row != self.size_y - 1 and column != 0 and self.grid[row + 1][column - 1].is_available():
             if self.grid[row + 1][column - 1].is_target():
+                person.found_target()
                 return True
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)
         if len(neighbouring_cells) < 1:
@@ -138,6 +155,7 @@ class SimGrid:
             return False
         min_row, min_column = min(neighbouring_cells, key=neighbouring_cells.get)
         self.grid[min_row][min_column].set_state('P')
+        person.set_coordinate(min_row, min_column)
         return True
 
     def merge_dicts(d1, d2):
