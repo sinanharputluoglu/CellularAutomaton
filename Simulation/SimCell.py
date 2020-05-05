@@ -54,9 +54,11 @@ class SimCell(object):
             else:
                 return self.utility_score
 
-    def get_avoidance_cost(self, cell):
-        if cell.state == 'P':
+    def get_avoidance_cost(self):
+        if self.state == 'P':
             return math.exp(1 / (-1 * R_MAX_SQUARED))
+        else:
+            return 0
 
     def is_target(self):
         if self.state == 'T':

@@ -107,49 +107,49 @@ class SimGrid:
             if self.grid[row - 1][column].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_score(dijsktra)
+            neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_score(dijsktra) + self.get_avoidance_score(row - 1, column)
 
         if column != 0 and self.grid[row][column -1].is_available():
             if self.grid[row][column - 1].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_score(dijsktra)
+            neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_score(dijsktra) + self.get_avoidance_score(row, column - 1)
 
         if row !=0 and column !=0 and self.grid[row - 1][column - 1].is_available():
             if self.grid[row - 1][column - 1].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row-1, column-1)] = self.grid[row - 1][column-1].get_score(dijsktra)
+            neighbouring_cells[(row-1, column-1)] = self.grid[row - 1][column-1].get_score(dijsktra) + self.get_avoidance_score(row-1, column - 1)
 
         if row != self.size_y - 1 and self.grid[row + 1][column].is_available():
             if self.grid[row+1][column].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row+1, column)] = self.grid[row + 1][column].get_score(dijsktra)
+            neighbouring_cells[(row+1, column)] = self.grid[row + 1][column].get_score(dijsktra) + self.get_avoidance_score(row+1, column)
 
         if column != self.size_x - 1 and self.grid[row][column + 1].is_available():
             if self.grid[row][column + 1].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row, column+1)] = self.grid[row][column+1].get_score(dijsktra)
+            neighbouring_cells[(row, column+1)] = self.grid[row][column+1].get_score(dijsktra) + self.get_avoidance_score(row, column + 1)
 
         if row != self.size_y - 1 and column != self.size_x - 1 and self.grid[row + 1][column + 1].is_available():
             if self.grid[row + 1][column + 1].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row+1, column+1)] = self.grid[row+1][column+1].get_score(dijsktra)
+            neighbouring_cells[(row+1, column+1)] = self.grid[row+1][column+1].get_score(dijsktra) + self.get_avoidance_score(row+1, column+1)
 
         if row != 0 and column != self.size_x - 1 and self.grid[row - 1][column + 1].is_available():
             if self.grid[row - 1][column + 1].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row-1, column+1)] = self.grid[row-1][column+1].get_score(dijsktra)
+            neighbouring_cells[(row-1, column+1)] = self.grid[row-1][column+1].get_score(dijsktra) + self.get_avoidance_score(row-1, column+1)
 
         if row != self.size_y - 1 and column != 0 and self.grid[row + 1][column - 1].is_available():
             if self.grid[row + 1][column - 1].is_target():
                 person.found_target()
                 return True
-            neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)
+            neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra) + self.get_avoidance_score(row+1, column-1)
         if len(neighbouring_cells) < 1:
             self.grid[row][column].set_state('P')
             return False
@@ -157,6 +157,33 @@ class SimGrid:
         self.grid[min_row][min_column].set_state('P')
         person.set_coordinate(min_row, min_column)
         return True
+
+    def get_avoidance_score(self, row, column):
+        score = 0
+        if row != 0 :
+            score += self.grid[row - 1][column].get_avoidance_cost()
+
+        if column != 0:
+            score += self.grid[row][column - 1].get_avoidance_cost()
+
+        if row !=0 and column !=0 :
+            score += self.grid[row - 1][column-1].get_avoidance_cost()
+
+        if row != self.size_y - 1 :
+            score += self.grid[row + 1][column].get_avoidance_cost()
+
+        if column != self.size_x - 1 :
+            score += self.grid[row][column+1].get_avoidance_cost()
+
+        if row != self.size_y - 1 and column != self.size_x - 1 :
+            score += self.grid[row+1][column+1].get_avoidance_cost()
+
+        if row != 0 and column != self.size_x - 1 :
+            score += self.grid[row-1][column+1].get_avoidance_cost()
+
+        if row != self.size_y - 1 and column != 0:
+            score += self.grid[row+1][column-1].get_avoidance_cost()
+        return score
 
     def merge_dicts(d1, d2):
         return {} if any(d1[k] != d2[k] for k in d1.keys() & d2) else dict(d1, **d2)
