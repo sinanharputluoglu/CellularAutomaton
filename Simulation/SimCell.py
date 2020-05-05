@@ -28,7 +28,8 @@ class SimCell(object):
 
     def is_available(self):
         if self.next_state == 'E' or self.state == 'T' or self.next_state == 'T':
-            return True
+            if self.next_state != 'P':
+                return True
         else:
             return False
 

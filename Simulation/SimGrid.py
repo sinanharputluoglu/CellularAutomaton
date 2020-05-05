@@ -41,6 +41,7 @@ class SimGrid:
     def set_pedestarians(self, ped_list: List):
         for value in ped_list:
             self.grid[value[0]][value[1]].state = 'P'
+            self.grid[value[0]][value[1]].next_state = 'P'
 
     def set_obstacles(self, obs_list: List):
         for value in obs_list:
@@ -133,6 +134,7 @@ class SimGrid:
                 return True
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra)
         if len(neighbouring_cells) < 1:
+            self.grid[row][column].set_state('P')
             return False
         min_row, min_column = min(neighbouring_cells, key=neighbouring_cells.get)
         self.grid[min_row][min_column].set_state('P')
