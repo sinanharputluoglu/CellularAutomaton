@@ -37,7 +37,7 @@ def prepare_simulation(simulation, grid):
 def simulate(simulation, grid):
     simulation.epoch(dijsk=True)
 
-    simulation.print_grid()
+    #simulation.print_grid()
 
     new_pedestrians = simulation.get_pedestrians()
 

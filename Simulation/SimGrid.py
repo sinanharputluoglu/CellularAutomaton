@@ -38,8 +38,6 @@ class SimGrid:
     def get_pedestrians(self):
         indices = [[i, j] for i, row in enumerate(self.grid) \
                    for j, cell in enumerate(row) if cell.state == "P"]
-        print(indices)
-
         return indices
 
     def set_pedestarians(self, ped_list: List):
@@ -47,7 +45,7 @@ class SimGrid:
         for value in ped_list:
             self.grid[value[0]][value[1]].state = 'P'
             self.grid[value[0]][value[1]].next_state = 'P'
-            self.persons.append(Pedestarian(value[0], value[1], speeds[randint(0,3)]))
+            self.persons.append(Pedestarian(value[0], value[1], speeds[randint(0,len(speeds) - 1)]))
 
     def set_obstacles(self, obs_list: List):
         for value in obs_list:
@@ -64,7 +62,7 @@ class SimGrid:
         i = self.size_x * self.size_y - 1
         min_x, min_y = self.find_distance_to_target(row, column)
         while(i >= 0):
-            print(min_x, min_y)
+            #print(min_x, min_y)
             min_x, min_y = self.find_distance_to_target(min_x, min_y)
             if min_x == -1 or min_y == -1:
                 min_x, min_y = self.find_new_cell()
@@ -105,49 +103,49 @@ class SimGrid:
         neighbouring_cells = {}
         if row != 0 and self.grid[row - 1][column].is_available():
             if self.grid[row - 1][column].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row - 1, column)] = self.grid[row - 1][column].get_score(dijsktra) + self.get_avoidance_score(row - 1, column)
 
         if column != 0 and self.grid[row][column -1].is_available():
             if self.grid[row][column - 1].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row, column - 1)] = self.grid[row][column - 1].get_score(dijsktra) + self.get_avoidance_score(row, column - 1)
 
         if row !=0 and column !=0 and self.grid[row - 1][column - 1].is_available():
             if self.grid[row - 1][column - 1].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row-1, column-1)] = self.grid[row - 1][column-1].get_score(dijsktra) + self.get_avoidance_score(row-1, column - 1)
 
         if row != self.size_y - 1 and self.grid[row + 1][column].is_available():
             if self.grid[row+1][column].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row+1, column)] = self.grid[row + 1][column].get_score(dijsktra) + self.get_avoidance_score(row+1, column)
 
         if column != self.size_x - 1 and self.grid[row][column + 1].is_available():
             if self.grid[row][column + 1].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row, column+1)] = self.grid[row][column+1].get_score(dijsktra) + self.get_avoidance_score(row, column + 1)
 
         if row != self.size_y - 1 and column != self.size_x - 1 and self.grid[row + 1][column + 1].is_available():
             if self.grid[row + 1][column + 1].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row+1, column+1)] = self.grid[row+1][column+1].get_score(dijsktra) + self.get_avoidance_score(row+1, column+1)
 
         if row != 0 and column != self.size_x - 1 and self.grid[row - 1][column + 1].is_available():
             if self.grid[row - 1][column + 1].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row-1, column+1)] = self.grid[row-1][column+1].get_score(dijsktra) + self.get_avoidance_score(row-1, column+1)
 
         if row != self.size_y - 1 and column != 0 and self.grid[row + 1][column - 1].is_available():
             if self.grid[row + 1][column - 1].is_target():
-                person.found_target()
+                person.found_target(self.sim_time)
                 return True
             neighbouring_cells[(row+1, column-1)] = self.grid[row+1][column-1].get_score(dijsktra) + self.get_avoidance_score(row+1, column-1)
         if len(neighbouring_cells) < 1:
